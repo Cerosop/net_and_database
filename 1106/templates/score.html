@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+</head>
+<body>
+    <form method="post" action={{url_for('score')}}>
+        <p>SID</p>
+        <input type="text" name="sid">
+        <button type="submit">submit</button>
+        {% for out in outs %}
+            <p>{{ out }}</p>
+        {% endfor %}
+    </form>
+    
+    
+</body>
+</html>

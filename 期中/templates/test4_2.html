@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
+    <title>home_update</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+    {% if res[0] == '0'%}
+    <script>
+        alert("login again");
+        window.location.href = "/login";
+    </script>
+    {%endif%}
+    <nav class="navbar navbar-expand-lg bg-body-tertiary">
+        <div class="container-fluid">
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                    <li class="nav-item">
+                        <a class="nav-link active" id="li1">會員列表</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" id="li2">修改個人資料</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" id="li3">訂閱</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" id="li4">檔案總管</a>
+                    </li>
+                </ul>
+                <ul class="nav justify-content-end">
+                    <li class="nav-item">
+                        <a class="nav-link active" id = "hi">hi</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="/login">登出</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <form method="POST" id="myform" action='/home/update/{{acc2}}'>
+        <div class="row justify-content-around">
+            <div class="col-11">
+                <label>帳號： </label>
+                <input type="text" class="form-control" placeholder="account" id="acc3" name="acc3" value={{res[1]}}>
+            </div>
+            <div class="col-11">
+                <label>密碼： </label>
+                <input type="text" class="form-control" placeholder="password" id="pas3" name="pas3" value={{res[2]}}>
+            </div>
+            <div class="col-11">
+                <label>電子信箱： </label>
+                <input type="text" class="form-control" placeholder="email" id="mai3" name="mai3" value={{res[3]}}>
+            </div>
+            <div class="col-11">
+                <label>性別: </label>
+                <input type="radio" id="male" name="gender3" value="male">
+                <label>男</label>
+                <input type="radio" id="female" name="gender3" value="female">
+                <label>女</label>
+                <input type="radio" id="other" name="gender3" value="other">
+                <label>其他</label>
+            </div>
+            <script>
+                var radios = document.getElementsByName("gender3");
+                if({{res[4]}} == "male")
+                    radios[0].click();
+                else if({{res[4]}} == "female")
+                    radios[1].click();
+                else
+                    radios[2].click();
+            </script>
+            <div class="col-11">
+                <label>喜好顏色: </label>
+                <input type="color" class="form-control" id = "col" name="col3" value={{res[5]}}>
+            </div>
+            
+        </div>
+        <div class="container text-center">
+            <div class="col-11">
+                <input type="submit" value="修改" name="submit3">
+            </div>
+        </div>
+        <script>
+            document.getElementById('myform').addEventListener('submit', function (e) {
+                e.preventDefault(); // 阻止表單提交
+                var formData = new FormData(this);
+    
+                fetch('/home/update/{{acc2}}', {
+                    method: 'POST',
+                    body: formData
+                })
+                .then(response => response.text())
+                .then(data => {
+                    var account = document.getElementById("acc3");
+                    var responseData = JSON.parse(data);
+                    if (responseData.res == "0"){
+                        alert("account exist");
+                        account.value = "";
+                    }
+                    else if (responseData.res == "-1"){
+                        alert("input imcomplete");
+                    }
+                    else if (responseData.res == "1"){
+                        var account = document.getElementById("acc3");
+                        var accountB = account.value;
+                        alert("success");
+                        window.location.href = "/home/update/" + accountB;
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                });
+            });
+        </script> 
+    </form>
+
+    
+
+    <script>
+        var url = location.href;
+        var accountB = "";
+        var hi = document.getElementById("hi");
+        accountB = url.split('/');
+        
+        if (accountB[1] == "home"){
+            accountB = ""
+        }
+        else{
+            accountB = accountB[accountB.length-1]
+        }
+        hi.innerHTML = "hi "+accountB;
+        
+
+        var li1 = document.getElementById("li1");
+        li1.href = "/home/members/"+accountB;
+        var li2 = document.getElementById("li2");
+        li2.href = "/home/update/"+accountB;
+        var li3 = document.getElementById("li3");
+        li3.href = "/home/sub/"+accountB;
+        var li4 = document.getElementById("li4");
+        li4.href = "/home/file/"+accountB;
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-HwwvtgBNo3bZJJLYd8oVXjrBZt8cqVSpeBNS5n7C8IVInixGAoxmnlMuBnhbgrkm" crossorigin="anonymous"></script>
+
+    
+</body>
+</html>
